@@ -1,22 +1,21 @@
-function viewProfile(index) {
-    localStorage.setItem("profileIndex", index);
-    window.location = "profile.html";
+function checkReminders(){
+    let today = new Date();
+
+    students.forEach(s=>{
+        if(s.status=="UNPAID"){
+            let due = new Date(s.due);
+            let diff = (due - today)/(1000*60*60*24);
+
+            if(diff <= 2 && diff >= 0){
+                let msg = "Hello " + s.name + 
+                ", your fee of ₹" + s.amount + 
+                " is due on " + s.due;
+
+                let url = "https://wa.me/" + s.phone + 
+                "?text=" + encodeURIComponent(msg);
+
+                window.open(url);
+            }
+        }
+    });
 }
-
-function loadProfile() {
-    let index = localStorage.getItem("profileIndex");
-    if(index == null) return;
-
-    let s = students[index];
-    let p = document.getElementById("profile");
-    if(p){
-        p.innerHTML =
-        "Name: " + s.name + "<br>" +
-        "Phone: " + s.phone + "<br>" +
-        "Fee: ₹" + s.amount + "<br>" +
-        "Due Date: " + s.due + "<br>" +
-        "Status: " + s.status;
-    }
-}
-
-loadProfile();
