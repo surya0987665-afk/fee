@@ -19,3 +19,5 @@ function checkReminders(){
         }
     });
 }
+" <button onclick='viewProfile("+i+")'>Profile</button>"
+" <button onclick='generateReceipt("+i+")'>Receipt</button>"
