@@ -4,47 +4,70 @@ function addStudent() {
     let name = document.getElementById("name").value;
     let phone = document.getElementById("phone").value;
     let amount = document.getElementById("amount").value;
-    let duedate = document.getElementById("duedate").value;
-    let paiddate = document.getElementById("paiddate").value;
+    let due = document.getElementById("due").value;
 
-    let status = paiddate ? "PAID" : "PENDING";
-
-    students.push({name, phone, amount, duedate, paiddate, status});
+    students.push({name, phone, amount, due, status:"UNPAID"});
     localStorage.setItem("students", JSON.stringify(students));
 
     displayStudents();
-    calculateIncome();
+}
+
+function markPaid(index) {
+    students[index].status = "PAID";
+    localStorage.setItem("students", JSON.stringify(students));
+    displayStudents();
 }
 
 function displayStudents() {
     let list = document.getElementById("list");
-    list.innerHTML = "";
+    if(!list) return;
 
-    students.forEach((s, index) => {
+    list.innerHTML = "";
+    students.forEach((s, i) => {
         let li = document.createElement("li");
         li.innerHTML = s.name + " - ₹" + s.amount + " - " + s.status +
-        " <button onclick='sendReminder(" + index + ")'>Reminder</button>";
+        " <button onclick='markPaid("+i+")'>Mark Paid</button>";
         list.appendChild(li);
     });
 }
 
-function calculateIncome() {
-    let total = 0;
+function showPaid() {
+    let list = document.getElementById("paidList");
+    if(!list) return;
+
     students.forEach(s => {
-        if (s.status === "PAID") {
-            total += Number(s.amount);
+        if(s.status == "PAID") {
+            let li = document.createElement("li");
+            li.innerText = s.name + " - ₹" + s.amount;
+            list.appendChild(li);
         }
     });
-    document.getElementById("income").innerText = "₹ " + total;
 }
 
-function sendReminder(index) {
-    let s = students[index];
-    let msg = "Hello " + s.name + ", Your fee of ₹" + s.amount + " is due on " + s.duedate;
+function showUnpaid() {
+    let list = document.getElementById("unpaidList");
+    if(!list) return;
 
-    let url = "https://wa.me/" + s.phone + "?text=" + encodeURIComponent(msg);
-    window.open(url);
+    students.forEach(s => {
+        if(s.status == "UNPAID") {
+            let li = document.createElement("li");
+            li.innerText = s.name + " - ₹" + s.amount;
+            list.appendChild(li);
+        }
+    });
+}
+
+function totalIncome() {
+    let total = 0;
+    students.forEach(s => {
+        if(s.status == "PAID") total += Number(s.amount);
+    });
+
+    let t = document.getElementById("total");
+    if(t) t.innerText = "₹ " + total;
 }
 
 displayStudents();
-calculateIncome();
+showPaid();
+showUnpaid();
+totalIncome();
