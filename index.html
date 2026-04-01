@@ -1,20 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Student Fee Reminder</title>
+    <title>Badminton Academy Fee Manager</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h1>Student Fee Reminder</h1>
+<h1>Nandi Pipes Badminton Academy</h1>
 
-    <input type="text" id="name" placeholder="Student Name">
-    <input type="date" id="date">
-    <button onclick="addStudent()">Add</button>
+<h2>Add Student Payment</h2>
 
-    <ul id="list"></ul>
+<input type="text" id="name" placeholder="Student Name">
+<input type="text" id="phone" placeholder="Phone Number">
+<input type="number" id="amount" placeholder="Fee Amount">
+<input type="date" id="duedate">
+<input type="date" id="paiddate">
 
-    <script src="script.js"></script>
+<button onclick="addStudent()">Save</button>
+
+<h2>Students List</h2>
+<ul id="list"></ul>
+
+<h2>Total Monthly Income</h2>
+<p id="income">0</p>
+
+<script src="script.js"></script>
 
 </body>
 </html>
