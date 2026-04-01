@@ -1,19 +1,40 @@
 let students = JSON.parse(localStorage.getItem("students")) || [];
 
-function addStudent() {
+function saveStudent() {
     let name = document.getElementById("name").value;
     let phone = document.getElementById("phone").value;
     let amount = document.getElementById("amount").value;
     let due = document.getElementById("due").value;
+    let editIndex = document.getElementById("editIndex").value;
 
-    students.push({name, phone, amount, due, status:"UNPAID"});
+    if (editIndex === "") {
+        students.push({name, phone, amount, due, status:"UNPAID"});
+    } else {
+        students[editIndex] = {name, phone, amount, due, status: students[editIndex].status};
+        document.getElementById("editIndex").value = "";
+    }
+
     localStorage.setItem("students", JSON.stringify(students));
-
     displayStudents();
+}
+
+function editStudent(index) {
+    let s = students[index];
+    document.getElementById("name").value = s.name;
+    document.getElementById("phone").value = s.phone;
+    document.getElementById("amount").value = s.amount;
+    document.getElementById("due").value = s.due;
+    document.getElementById("editIndex").value = index;
 }
 
 function markPaid(index) {
     students[index].status = "PAID";
+    localStorage.setItem("students", JSON.stringify(students));
+    displayStudents();
+}
+
+function deleteStudent(index) {
+    students.splice(index, 1);
     localStorage.setItem("students", JSON.stringify(students));
     displayStudents();
 }
@@ -25,49 +46,12 @@ function displayStudents() {
     list.innerHTML = "";
     students.forEach((s, i) => {
         let li = document.createElement("li");
-        li.innerHTML = s.name + " - ₹" + s.amount + " - " + s.status +
-        " <button onclick='markPaid("+i+")'>Mark Paid</button>";
+        li.innerHTML = s.name + " | ₹" + s.amount + " | " + s.status +
+        " <button onclick='editStudent("+i+")'>Edit</button>" +
+        " <button onclick='markPaid("+i+")'>Paid</button>" +
+        " <button onclick='deleteStudent("+i+")'>Delete</button>";
         list.appendChild(li);
     });
 }
 
-function showPaid() {
-    let list = document.getElementById("paidList");
-    if(!list) return;
-
-    students.forEach(s => {
-        if(s.status == "PAID") {
-            let li = document.createElement("li");
-            li.innerText = s.name + " - ₹" + s.amount;
-            list.appendChild(li);
-        }
-    });
-}
-
-function showUnpaid() {
-    let list = document.getElementById("unpaidList");
-    if(!list) return;
-
-    students.forEach(s => {
-        if(s.status == "UNPAID") {
-            let li = document.createElement("li");
-            li.innerText = s.name + " - ₹" + s.amount;
-            list.appendChild(li);
-        }
-    });
-}
-
-function totalIncome() {
-    let total = 0;
-    students.forEach(s => {
-        if(s.status == "PAID") total += Number(s.amount);
-    });
-
-    let t = document.getElementById("total");
-    if(t) t.innerText = "₹ " + total;
-}
-
 displayStudents();
-showPaid();
-showUnpaid();
-totalIncome();
